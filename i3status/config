@@ -1,0 +1,93 @@
+general {
+        output_format = "i3bar"
+        colors = true
+        interval = 5
+}
+
+// order += "ipv6"
+// order += "run_watch DHCP"
+// order += "run_watch VPNC"
+order += "path_exists VPN"
+order += "wireless wlp0s20f3"
+order += "ethernet enx9405bb132bd6"
+order += "battery 0"
+order += "cpu_temperature 1"
+order += "cpu_temperature 2"
+order += "disk /"
+order += "memory"
+order += "load"
+order += "tztime mexico"
+order += "tztime local"
+
+wireless wlp0s20f3 {
+        format_up = "W: (%quality at %essid, %bitrate) %ip"
+        format_down = "W: down"
+}
+
+ethernet enx9405bb132bd6 {
+        format_up = "E: %ip (%speed)"
+        format_down = "E: down"
+}
+
+battery 0 {
+        format = "%status %percentage %remaining %emptytime"
+        format_down = "No battery"
+        status_chr = "⚡ CHR"
+        status_bat = "🔋 BAT"
+        status_unk = "? UNK"
+        status_full = "☻ FULL"
+        path = "/sys/class/power_supply/BAT%d/uevent"
+        low_threshold = 10
+}
+
+run_watch DHCP {
+        pidfile = "/var/run/dhclient*.pid"
+}
+
+run_watch VPNC {
+        # file containing the PID of a vpnc process
+        pidfile = "/var/run/vpnc/pid"
+}
+
+path_exists VPN {
+        # path exists when a VPN tunnel launched by nmcli/nm-applet is active
+        path = "/proc/sys/net/ipv4/conf/tun0"
+}
+
+tztime local {
+        format = "%Y-%m-%d %H:%M:%S"
+        hide_if_equals_localtime = false
+}
+
+tztime mexico {
+        format = "%H:%M:%S MEX"
+        timezone = "America/Mexico_City"
+}
+
+load {
+        format = "Load:%5min"
+}
+
+cpu_temperature 1 {
+        format = "CPU: %degrees °C"
+        path = "/sys/devices/platform/coretemp.0/hwmon/hwmon6/subsystem/hwmon4/temp1_input"
+}
+
+cpu_temperature 2 {
+        format = "GPU: %degrees °C"
+        path = "/sys/devices/platform/coretemp.0/hwmon/hwmon6/subsystem/hwmon4/temp2_input"
+}
+
+memory {
+        format = "%used/%total RAM"
+        threshold_degraded = "10%"
+        // format_degraded = "MEMORY: %free"
+}
+
+disk "/" {
+        format = "%used/%total Disk"
+}
+
+read_file uptime {
+        path = "/proc/uptime"
+}
